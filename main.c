@@ -11,9 +11,9 @@ int main(void)
 
 	while (1)
 	{
-		if (TIM1->SR & (1 << 0))
+		if (!(TIM1->CR1 & TIM_CR1_CEN))
 		{
-			TIM1->SR &= ~(1);
+			TIM1->CR1 |= TIM_CR1_CEN;
 			GPIOA->ODR ^= GPIO_ODR_ODR6;
 		}
 	}
@@ -35,9 +35,10 @@ void Timer_setup(void)
 	RCC->APB2ENR |= RCC_APB2ENR_TIM1EN;
 
 	TIM1->CNT = 0;
-	TIM1->CR1 &= ~TIM_CR1_DIR;
+	TIM1->CR1 |= TIM_CR1_DIR;// down counter
+	TIM1->CR1 |= TIM_CR1_OPM;
 	TIM1->PSC = 7200 - 1;
 	TIM1->ARR = 5000;
 
-	TIM1->CR1 |= TIM_CR1_CEN;
+	//TIM1->CR1 |= TIM_CR1_CEN;
 }
